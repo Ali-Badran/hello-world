@@ -1,0 +1,36 @@
+The WM_DISPLAYCHANGE message is sent to all windows when the display resolution has changed
+
+LRESULT CALLBACK WindowProc(
+  HWND hwnd, 
+  UINT  uMsg, 
+  WPARAM wParam, 
+  LPARAM lParam   
+);
+
+Parameters:
+wParam
+    The new image depth of the display, in bits per pixel.
+lParam
+    The low-order word specifies the horizontal resolution of the screen.
+    The high-order word specifies the vertical resolution of the screen.
+
+Remarks
+This message is only sent to top-level windows. For all other windows it is posted.
+----------------------------------------------------------------------------------------------
+WM_GETMINMAXINFO
+Sent to a window when the size or position of the window is about to change. An application can use
+this message to override the window's default maximized size and position, or its default minimum
+or maximum tracking size.
+
+WM_WINDOWPOSCHANGING
+Sent to a window whose size, position, or place in the Z order is about to change as a result of a call
+to the SetWindowPos function or another window-management function.
+
+WM_WINDOWPOSCHANGED
+Sent to a window whose size, position, or place in the Z order has changed as a result of a call to the
+SetWindowPos function or another window-management function.
+
+
+WM_ERASEBKGND
+Sent when the window background must be erased (for example, when a window is resized).
+The message is sent to prepare an invalidated portion of a window for painting

@@ -1,0 +1,7 @@
+https://social.msdn.microsoft.com/Forums/en-US/62793b56-b51a-4dcf-9621-a07f90b864e9/getting-device-instrance-id-using-wndproc?forum=csharplanguage
+https://www.google.com/search?client=firefox-b-d&q=DBT_DEVTYP_PORT+value+to+get+usb
+https://social.msdn.microsoft.com/Forums/vstudio/en-US/53d104d6-e6ac-4871-b390-5136e049080d/override-wndproc-ismdicontainer-issues?forum=csharpgeneral
+https://www.google.com/search?client=firefox-b-d&q=lParam++in+wndProc+c%23
+https://www.codeproject.com/Articles/119168/Hardware-Change-Detection
+https://www.dreamincode.net/forums/topic/260689-protected-override-void-wndprocref-message-m-goes-into-loop/
+https://social.msdn.microsoft.com/Forums/en-US/acf09321-8e9a-497f-ada8-8617b7a03ac3/getting-messages-from-removable-media?forum=netfxbcl

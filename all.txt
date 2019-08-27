@@ -1,0 +1,201 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.Management;
+using System.IO;
+
+namespace DesktopTest
+{
+    public partial class Form1 : Form
+    {
+        private const int WM_DEVICECHANGE = 0x219; // device change event
+        private const int DBT_DEVICEARRIVAL = 0x8000; // system detected a new device
+        private const int DBT_DEVICEREMOVECOMPLETE = 0x8004; // device is gone 
+        private const int DBT_DEVTYP_PORT = 0x00000002;      // serial, parallel
+        // private const int DBT_DEVICEREMOVEPENDING = 0x8003; // about to remove, still available       
+
+        private getFriendlyNameListDelegate mDeleg;
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct DEV_BROADCAST_VOLUME
+
+        {
+
+            public int dbcv_size;
+
+            public int dbcv_devicetype;
+
+            public int dbcv_reserved;
+
+            public int dbcv_unitmask;
+
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            DEV_BROADCAST_VOLUME vol;
+
+            // Used to get drive letter for drive with newly inserted media
+            base.WndProc(ref m);
+
+            // Check the message that windows is trying to tell us
+            switch (m.Msg)
+            {
+                case WM_DEVICECHANGE:
+                    switch (m.WParam.ToInt32())
+                    {
+                        // Something has arrived in one of our devices
+                        case DBT_DEVICEARRIVAL:
+                            // Get the device type
+                            Int32 devType = Marshal.ReadInt32(m.LParam, 4);
+                            listBox1.Items.Add(m.ToString());
+                            if (devType == 0x00000002)
+                            {
+
+
+                                vol =
+
+                                    (DEV_BROADCAST_VOLUME)
+
+                                    Marshal.PtrToStructure(
+
+                                    m.LParam,
+
+                                    typeof(DEV_BROADCAST_VOLUME)
+
+                                    );
+
+
+
+                                // handle new volume
+
+                                VolumeAdded(vol);
+                                listBox1.Items.Add(devType.ToString());
+
+                            }
+                            //break;
+                            //mDeleg = new getFriendlyNameListDelegate(getFriendlyNameList);
+                            //AsyncCallback callback = new AsyncCallback(getFriendlyNameListCallback);
+                            //mDeleg.BeginInvoke(callback, new object());
+                            break;
+
+                        case DBT_DEVICEREMOVECOMPLETE:
+                            listBox1.Items.Add(m.ToString());
+                            break;
+
+                            //
+                            // The parameter lParam gives us information about the type and wParam about the state (arrival or removed) of the device
+                    }
+                    break;
+            }
+
+        }
+
+        private void VolumeAdded(DEV_BROADCAST_VOLUME vol)
+
+        {
+
+            string driveLetter = DriveLetterFromUnitMask(vol.dbcv_unitmask);
+
+            DriveInfo d = new DriveInfo(driveLetter);
+
+
+
+            StringBuilder VolumeInfo = new StringBuilder();
+
+
+
+            VolumeInfo.AppendLine("Device Added.");
+
+            VolumeInfo.AppendLine();
+
+            VolumeInfo.AppendLine("Volume Name : " + d.VolumeLabel);
+
+            VolumeInfo.AppendLine("Drive Name : " + d.Name);
+
+            VolumeInfo.AppendLine("Drive Type : " + d.DriveType);
+
+            VolumeInfo.AppendLine("Drive Format : " + d.DriveFormat);
+
+            VolumeInfo.AppendLine("Is Ready : " + d.IsReady);
+
+            VolumeInfo.AppendLine("Root Directory : " + d.RootDirectory);
+
+            VolumeInfo.AppendLine("Total Size : " + d.TotalSize);
+
+            VolumeInfo.AppendLine("Total Free Space : " + d.TotalFreeSpace);
+
+            VolumeInfo.AppendLine("Available Free Space : " + d.AvailableFreeSpace);
+
+
+
+            MessageBox.Show(VolumeInfo.ToString());
+
+        }
+
+        private string DriveLetterFromUnitMask(int unitmask)
+
+        {
+
+            int i;
+
+            for (i = 0; i < 26; ++i)
+
+            {
+
+                if ((unitmask & 0x1) > 0) break;
+
+                unitmask = unitmask >> 1;
+
+            }
+
+
+
+            i += 65; // offset from value of A
+
+
+
+            return Convert.ToString((char)i);
+
+        }
+
+
+        // function queries the system using WMI and gets an arraylist of all com port devices      
+        private void getFriendlyNameList()
+        {
+            ManagementObjectSearcher theSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_DiskDrive WHERE InterfaceType='USB'");
+            foreach (ManagementObject currentObject in theSearcher.Get())
+            {
+                listBox1.Items.Add(currentObject.Properties["PNPDeviceID"].Value.ToString());
+            }
+        }
+
+        // delegate wrapper function for the getFriendlyNameList function   
+        private delegate void getFriendlyNameListDelegate();
+
+        // callback method when the thread returns   
+        private void getFriendlyNameListCallback(IAsyncResult ar)
+        {
+            // got the returned arrayList, now we can do whatever with it   
+            //ArrayList result = mDeleg.EndInvoke(ar);
+        }
+
+        public Form1()
+        {
+            InitializeComponent();
+            listBox1.Items.Add("GO");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            listBox1.Items.Clear();
+        }
+    }
+}

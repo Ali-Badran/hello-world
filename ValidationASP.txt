@@ -1,0 +1,6 @@
+<asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ErrorMessage="RegularExpressionValidator" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></asp:RegularExpressionValidator>
+
+<asp:RequiredFieldValidator ID="RequiredFieldValidator1" Display="Dynamic" ForeColor="red" runat="server" ControlToValidate="TextCount" ValidationGroup="countGroup" ErrorMessage="This Field Is Required"></asp:RequiredFieldValidator>
+                            
+<asp:CompareValidator ID="CompareValidator1" runat="server" ForeColor="red" ControlToValidate="TextCount" ErrorMessage="Meal count must be number greater than 0" Display="Dynamic" ValidationGroup="countGroup" Operator="GreaterThan" Type="Integer" ValueToCompare="0"></asp:CompareValidator>
+                        

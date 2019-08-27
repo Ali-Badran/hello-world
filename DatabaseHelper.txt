@@ -1,0 +1,3 @@
+EXEC sp_help employee; // To describe a table
+
+SELECT * FROM SYSOBJECTS WHERE xtype = 'U'; // To show all tables
